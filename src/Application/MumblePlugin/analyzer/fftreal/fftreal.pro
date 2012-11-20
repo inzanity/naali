@@ -1,4 +1,4 @@
-include(../../spectrum.pri)
+include(../spectrum.pri)
 
 static: error(This library cannot be built for static linkage)
 
@@ -24,23 +24,15 @@ HEADERS  += Array.h \
             OscSinCos.h \
             OscSinCos.hpp \
             def.h
-	    
+
 # Wrapper used to export the required instantiation of the FFTRealFixLen template
 HEADERS  += fftreal_wrapper.h
 SOURCES  += fftreal_wrapper.cpp
 
 DEFINES  += FFTREAL_LIBRARY
 
-symbian {
-    # Provide unique ID for the generated binary, required by Symbian OS
-    TARGET.UID3 = 0xA000E403
-    TARGET.CAPABILITY = UserEnvironment
-}
-
 macx {
     CONFIG += lib_bundle
-} else {
-    !symbian: DESTDIR = ../..$${spectrum_build_dir}
 }
 
 # Install
