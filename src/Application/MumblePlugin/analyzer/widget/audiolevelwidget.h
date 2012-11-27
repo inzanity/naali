@@ -57,7 +57,6 @@ class FrequencySpectrum;
 namespace MumbleAudio
 {
 
-
 /**
  * Spectrum analyzer container widget.
  */
