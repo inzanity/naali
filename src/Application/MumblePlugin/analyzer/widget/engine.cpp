@@ -141,6 +141,16 @@ void Engine::setWindowFunction(WindowFunction type)
 
 void Engine::startRecording()
 {
+    // Spew all discovered input devices on start
+    qDebug() << "Input devices:";
+    for (int i = 0; i < m_availableAudioInputDevices.size(); i++) {
+        const QAudioDeviceInfo &d = m_availableAudioInputDevices[i];
+        qDebug() << "\t" << d.deviceName();
+    }
+    qDebug() << "Selected device: " << m_audioInputDevice.deviceName();
+    qDebug() << "";
+
+
     if (m_audioInput) {
         if (QAudio::AudioInput == m_mode &&
             QAudio::SuspendedState == m_state) {

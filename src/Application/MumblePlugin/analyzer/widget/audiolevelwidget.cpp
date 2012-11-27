@@ -47,6 +47,7 @@
 
 #include <QTimerEvent>
 #include <QDebug>
+#include <QVBoxLayout>
 
 namespace MumbleAudio
 {
@@ -59,6 +60,11 @@ AudioLevelWidget::AudioLevelWidget(QWidget *parent)
 {
     m_silenceClipLevel = -1;
     m_speechClipLevel = -1;
+
+    QLayout *layout = new QVBoxLayout;
+    layout->addWidget(m_spectrograph);
+    layout->addWidget(m_levelMeter);
+    setLayout(layout);
 }
 
 AudioLevelWidget::~AudioLevelWidget()
@@ -134,6 +140,9 @@ void AudioLevelWidget::timerEvent(QTimerEvent *event)
 
 void AudioLevelWidget::startRecording()
 {
+    // Blindly select default input device
+    m_engine->setAudioInputDevice(QAudioDeviceInfo::defaultInputDevice());
+
     m_engine->startRecording();
 }
 
