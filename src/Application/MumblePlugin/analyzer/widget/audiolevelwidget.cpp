@@ -65,6 +65,11 @@ AudioLevelWidget::AudioLevelWidget(QWidget *parent)
     layout->addWidget(m_spectrograph);
     layout->addWidget(m_levelMeter);
     setLayout(layout);
+
+    // Attach handlers
+    connect(m_engine,
+        SIGNAL(spectrumChanged(qint64, qint64, const FrequencySpectrum &)),
+        SLOT(spectrumChanged(qint64, qint64, const FrequencySpectrum &)));
 }
 
 AudioLevelWidget::~AudioLevelWidget()
@@ -129,7 +134,7 @@ int AudioLevelWidget::getLevels(qint64 *silenceClip, qint64 *speechClip)
 void AudioLevelWidget::setSpectrumConfig(int nBars, qreal floorFreq, qreal ceilFreq)
 {
     m_spectrograph->setParams(nBars, floorFreq, ceilFreq);
-    reset();
+    initRecord();
 }
 
 void AudioLevelWidget::timerEvent(QTimerEvent *event)

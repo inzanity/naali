@@ -370,7 +370,7 @@ bool Engine::initialize()
     if (selectFormat()) {
         if (m_format != format) {
             resetAudioDevices();
-            m_buffer.fill(0);
+            m_buffer.fill(0, audioLength(m_format, 50000000));
             emit bufferLengthChanged(bufferLength());
             emit bufferChanged(0, 0, m_buffer);
             m_audioInput = new QAudioInput(m_audioInputDevice, m_format, this);
