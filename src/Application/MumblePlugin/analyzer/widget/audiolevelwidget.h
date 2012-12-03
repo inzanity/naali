@@ -95,7 +95,7 @@ private slots:
 private:
     Engine*         m_engine;
     Spectrograph*   m_spectrograph;
-    LevelMeter*     m_levelMeter;
+    //LevelMeter*     m_levelMeter;
 
     // Audio clip levels
     qint64          m_silenceClipLevel;
