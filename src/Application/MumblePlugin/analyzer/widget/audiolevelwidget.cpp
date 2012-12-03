@@ -55,15 +55,14 @@ namespace MumbleAudio
 AudioLevelWidget::AudioLevelWidget(QWidget *parent)
     :   QWidget(parent),
     m_engine(new Engine(this)),
-    m_spectrograph(new Spectrograph(this)),
-    m_levelMeter(new LevelMeter(this))
+    m_spectrograph(new Spectrograph(this))
 {
     m_silenceClipLevel = -1;
     m_speechClipLevel = -1;
 
     QLayout *layout = new QVBoxLayout;
     layout->addWidget(m_spectrograph);
-    layout->addWidget(m_levelMeter);
+    //layout->addWidget(m_levelMeter);
     setLayout(layout);
 
     // Attach handlers
@@ -87,7 +86,7 @@ void AudioLevelWidget::stateChanged(QAudio::Mode mode, QAudio::State state)
 
     // Note: we do *not* reset the engine
     if (state != QAudio::ActiveState && state != QAudio::SuspendedState) {
-        m_levelMeter->reset();
+        //m_levelMeter->reset();
         m_spectrograph->reset();
     }
 }
@@ -177,7 +176,7 @@ void AudioLevelWidget::reset()
 {
     m_engine->reset();
     m_spectrograph->reset();
-    m_levelMeter->reset();
+    //m_levelMeter->reset();
 }
 
 void AudioLevelWidget::infoMessage(const QString &message)
