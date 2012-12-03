@@ -10,7 +10,7 @@ MainView::MainView()
     create_layout();
     connect_signals();
 
-    analyzer->setSpectrumConfig(30, 80, 17000);
+    analyzer->setSpectrumConfig(30, 80, 4200);
 }
 
 MainView::~MainView()
@@ -55,5 +55,14 @@ void MainView::btn_cb()
         analyzer->startRecording();
     else
         analyzer->stopRecording();
+
+    // Dump measured levels afterwards
+    if (!recording) {
+        qreal _min, _max;
+        analyzer->getLevels(_min, _max);
+
+        qDebug("Minimum audio level: %.2f; Maximum audio level: %.2f",
+            _min, _max);
+    }
 }
 
