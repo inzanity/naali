@@ -73,7 +73,7 @@ public:
     void timerEvent(QTimerEvent *event);
 
     // Results
-    int getLevels(qint64 *silenceClip, qint64 *speechClip);
+    int getLevels(qreal &aboveSilence, qreal &peakLevel);
 
     // Just passing through...
     void startRecording(void);
@@ -98,8 +98,8 @@ private:
     //LevelMeter*     m_levelMeter;
 
     // Audio clip levels
-    qint64          m_silenceClipLevel;
-    qint64          m_speechClipLevel;
+    qreal           m_silenceClipLevel;
+    qreal           m_speechClipLevel;
 
     void reset(void);
 

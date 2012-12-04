@@ -146,6 +146,11 @@ public:
      */
     void setWindowFunction(WindowFunction type);
 
+    /**
+     * Fetch calculated audio levels from spectrum analyser
+     */
+    void getAudioLevels(qreal &minLevel, qreal &maxLevel);
+
 public slots:
     void startRecording();
     void startPlayback();
