@@ -68,6 +68,8 @@ public:
     SpectrumAnalyserThread(QObject *parent);
     ~SpectrumAnalyserThread();
 
+    void getLevels(qreal &maxLevel, qreal &minLevel);
+
 public slots:
     void setWindowFunction(WindowFunction type);
     void calculateSpectrum(const QByteArray &buffer,
@@ -98,6 +100,10 @@ private:
 #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
     QThread*                                    m_thread;
 #endif
+
+    // For storing audio levels/thresholds
+    qreal               m_micPeak;
+    qreal               m_micNoise;
 };
 
 /**
@@ -142,6 +148,12 @@ public:
      * Note that cancelling is asynchronous.
      */
     void cancelCalculation();
+
+    /*
+     * Fetch calculated audio levels
+     */
+    void getLevels(qreal &maxLevel, qreal &minLevel);
+
 
 signals:
     void spectrumChanged(const FrequencySpectrum &spectrum);

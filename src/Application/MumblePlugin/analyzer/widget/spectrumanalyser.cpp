@@ -57,6 +57,8 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     ,   m_input(SpectrumLengthSamples, 0.0)
     ,   m_output(SpectrumLengthSamples, 0.0)
     ,   m_spectrum(SpectrumLengthSamples)
+    ,   m_micPeak(-99.9)
+    ,   m_micNoise(99.9)
 #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
     ,   m_thread(new QThread(this))
 #endif
@@ -107,6 +109,8 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
 {
     Q_ASSERT(buffer.size() == m_numSamples * bytesPerSample);
 
+    qint32 pcmSum = 0;
+
     // Initialize data array
     const char *ptr = buffer.constData();
     for (int i=0; i<m_numSamples; ++i) {
@@ -116,7 +120,20 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         const DataType windowedSample = realSample * m_window[i];
         m_input[i] = windowedSample;
         ptr += bytesPerSample;
+
+        // Add PCM sample value to running sum for averaging after loop
+        pcmSum += static_cast<qint32>(pcmSample);
     }
+
+    // AVG(pcmSample)
+    qint32 pcmAvg = pcmSum / m_numSamples;
+    // sqrt(AVG(pcmSample)) / 32768  (0xffff / 2)
+    qreal pcmSq = sqrtf(static_cast<qreal>(pcmAvg)) / 32768.0;
+
+    // Microphone level, lifted directly from
+    // MumblePlugin::AudioProcessor::timerEvent
+    qreal PeakMic = qMax(20.0f * log10f(pcmSq), -96.0f);
+
 
     // Calculate the FFT
     m_fft->calculateFFT(m_output.data(), m_input.data());
@@ -141,7 +158,28 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         m_spectrum[i].amplitude = amplitude;
     }
 
+    // Level is a value between -96.0 and 0.0
+    if (PeakMic >= -96.0 && PeakMic <= 0.0) {
+        qDebug("Microphone peak level: %.4f", PeakMic);
+
+        // Loudest level
+        if (PeakMic > m_micPeak)
+            m_micPeak = PeakMic;
+
+        // Lowest level
+        if (PeakMic < m_micNoise)
+            m_micNoise = PeakMic;
+
+        qDebug("m_micPeak = %.4f, m_micNoise = %.4f", m_micPeak, m_micNoise);
+    }
+
     emit calculationComplete(m_spectrum);
+}
+
+void SpectrumAnalyserThread::getLevels(qreal &minLevel, qreal &maxLevel)
+{
+    maxLevel = m_micPeak;
+    minLevel = m_micNoise;
 }
 
 
@@ -217,6 +255,11 @@ void SpectrumAnalyser::cancelCalculation()
 {
     if (Busy == m_state)
         m_state = Cancelled;
+}
+
+void SpectrumAnalyser::getLevels(qreal &maxLevel, qreal &minLevel)
+{
+    m_thread->getLevels(maxLevel, minLevel);
 }
 
 
