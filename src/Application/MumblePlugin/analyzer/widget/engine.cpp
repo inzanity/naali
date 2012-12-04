@@ -134,6 +134,11 @@ void Engine::setWindowFunction(WindowFunction type)
     m_spectrumAnalyser.setWindowFunction(type);
 }
 
+void Engine::getAudioLevels(qreal &minLevel, qreal &maxLevel)
+{
+    m_spectrumAnalyser.getLevels(minLevel, maxLevel);
+}
+
 
 //-----------------------------------------------------------------------------
 // Public slots

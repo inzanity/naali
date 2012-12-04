@@ -117,14 +117,14 @@ void AudioLevelWidget::spectrumChanged(qint64 position, qint64 length,
 // Sets clip level values to provided arguments, returns 0 on success.
 // If either of the levels is missing, does nothing to the arguments and
 // returns -1.
-int AudioLevelWidget::getLevels(qint64 *silenceClip, qint64 *speechClip)
+int AudioLevelWidget::getLevels(qreal &aboveSilence, qreal &peakLevel)
 {
-    if (m_silenceClipLevel < 0 || m_speechClipLevel < 0) {
-        return -1;  // Should probably be a defined error code...
-    }
+    // Fetch values first
 
-    *silenceClip = m_silenceClipLevel;
-    *speechClip = m_speechClipLevel;
+    m_engine->getAudioLevels(m_silenceClipLevel, m_speechClipLevel);
+
+    aboveSilence = m_silenceClipLevel;
+    peakLevel = m_speechClipLevel;
     return 0;
 }
 

@@ -68,7 +68,7 @@ public:
     SpectrumAnalyserThread(QObject *parent);
     ~SpectrumAnalyserThread();
 
-    void getLevels(qreal &maxLevel, qreal &minLevel);
+    void getLevels(qreal &minLevel, qreal &maxLevel);
 
 public slots:
     void setWindowFunction(WindowFunction type);
@@ -152,7 +152,7 @@ public:
     /*
      * Fetch calculated audio levels
      */
-    void getLevels(qreal &maxLevel, qreal &minLevel);
+    void getLevels(qreal &minLevel, qreal &maxLevel);
 
 
 signals:

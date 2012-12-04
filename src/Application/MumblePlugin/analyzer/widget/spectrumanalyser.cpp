@@ -257,9 +257,9 @@ void SpectrumAnalyser::cancelCalculation()
         m_state = Cancelled;
 }
 
-void SpectrumAnalyser::getLevels(qreal &maxLevel, qreal &minLevel)
+void SpectrumAnalyser::getLevels(qreal &minLevel, qreal &maxLevel)
 {
-    m_thread->getLevels(maxLevel, minLevel);
+    m_thread->getLevels(minLevel, maxLevel);
 }
 
 
