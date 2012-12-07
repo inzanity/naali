@@ -152,7 +152,7 @@ public:
     void getAudioLevels(qreal &minLevel, qreal &maxLevel);
 
 public slots:
-    void startRecording();
+    void startRecording(bool speaking);
     void startPlayback();
     void suspend();
     void setAudioInputDevice(const QAudioDeviceInfo &device);

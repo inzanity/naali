@@ -4,7 +4,8 @@
 #include <QtGui>
 #include "audiolevelwidget.h"
 
-#define REC_START "Start recording"
+#define REC_START_SILENCE "Start recording (silence)"
+#define REC_START_VOICE "Start recording (voice)"
 #define REC_STOP "Stop recording"
 
 class MainView : public QDialog
@@ -16,7 +17,9 @@ public:
     ~MainView();
 
 public slots:
-    void btn_cb();
+    void btn1_cb();
+    void btn2_cb();
+    void btnX_cb();
 
 private:
     void create_layout();
@@ -26,7 +29,9 @@ private:
     // GUI stuff
     QVBoxLayout     *layout;    // vbox
 
-    QPushButton     *btn;
+    QPushButton     *btn1;
+    QPushButton     *btn2;
+    QPushButton     *btnX;
 
     // Spectrum analyzer
     MumbleAudio::AudioLevelWidget    *analyzer;

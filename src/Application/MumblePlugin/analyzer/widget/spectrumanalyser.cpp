@@ -57,8 +57,13 @@ SpectrumAnalyserThread::SpectrumAnalyserThread(QObject *parent)
     ,   m_input(SpectrumLengthSamples, 0.0)
     ,   m_output(SpectrumLengthSamples, 0.0)
     ,   m_spectrum(SpectrumLengthSamples)
-    ,   m_micPeak(-99.9)
-    ,   m_micNoise(99.9)
+    ,   m_micNoiseLow(99.9)
+    ,   m_micNoiseHigh(-99.9)
+    ,   m_micSpeechLow(99.9)
+    ,   m_micSpeechHigh(-99.9)
+    ,   m_noiseThreshold(99.9)
+    ,   m_speechThreshold(99.9)
+    ,   m_measuringVoice(false)
 #ifdef SPECTRUM_ANALYSER_SEPARATE_THREAD
     ,   m_thread(new QThread(this))
 #endif
@@ -158,28 +163,57 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
         m_spectrum[i].amplitude = amplitude;
     }
 
-    // Level is a value between -96.0 and 0.0
-    if (PeakMic >= -96.0 && PeakMic <= 0.0) {
-        qDebug("Microphone peak level: %.4f", PeakMic);
+    // Active voice level measurements
+    if (m_measuringVoice) {
+        // Level is a value between -96.0 and 0.0
+        if (PeakMic >= -96.0 && PeakMic <= 0.0) {
+            // Loudest level
+            if (PeakMic > m_micSpeechHigh)
+                m_micSpeechHigh = PeakMic;
 
-        // Loudest level
-        if (PeakMic > m_micPeak)
-            m_micPeak = PeakMic;
+            // Lowest level
+            if (PeakMic < m_micSpeechLow)
+                m_micSpeechLow = PeakMic;
+        }
+    // Background noise ("silence") measurements
+    } else {
+        // Level is a value between -96.0 and 0.0
+        if (PeakMic >= -96.0 && PeakMic <= 0.0) {
+            // Loudest level
+            if (PeakMic > m_micNoiseHigh)
+                m_micNoiseHigh = PeakMic;
 
-        // Lowest level
-        if (PeakMic < m_micNoise)
-            m_micNoise = PeakMic;
-
-        qDebug("m_micPeak = %.4f, m_micNoise = %.4f", m_micPeak, m_micNoise);
+            // Lowest level
+            if (PeakMic < m_micNoiseLow)
+                m_micNoiseLow = PeakMic;
+        }
     }
 
     emit calculationComplete(m_spectrum);
 }
 
-void SpectrumAnalyserThread::getLevels(qreal &minLevel, qreal &maxLevel)
+void SpectrumAnalyserThread::getLevels(qreal &noiseClip, qreal &speechClip)
 {
-    maxLevel = m_micPeak;
-    minLevel = m_micNoise;
+    // We do the final calculations from stored values here
+    //
+    // Background noise clipping: higher of the two noise levels
+    m_noiseThreshold = m_micNoiseHigh;
+
+    // Speech clipping: lower of the two sound levels
+    m_speechThreshold = m_micSpeechLow;
+
+
+    // FIXME: sanity checks missing; thresholds may be recalculated
+    // and refined as needed before copying the values out.
+
+
+    noiseClip = m_noiseThreshold;
+    speechClip = m_speechThreshold;
+}
+
+void SpectrumAnalyserThread::setAudioMode(bool speaking)
+{
+    m_measuringVoice = speaking;
 }
 
 
@@ -260,6 +294,11 @@ void SpectrumAnalyser::cancelCalculation()
 void SpectrumAnalyser::getLevels(qreal &minLevel, qreal &maxLevel)
 {
     m_thread->getLevels(minLevel, maxLevel);
+}
+
+void SpectrumAnalyser::setAudioMode(bool speaking)
+{
+    m_thread->setAudioMode(speaking);
 }
 
 

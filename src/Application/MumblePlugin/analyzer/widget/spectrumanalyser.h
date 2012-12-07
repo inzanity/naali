@@ -69,6 +69,7 @@ public:
     ~SpectrumAnalyserThread();
 
     void getLevels(qreal &minLevel, qreal &maxLevel);
+    void setAudioMode(bool speaking);
 
 public slots:
     void setWindowFunction(WindowFunction type);
@@ -101,9 +102,20 @@ private:
     QThread*                                    m_thread;
 #endif
 
+    // Measurement mode flag
+    bool                m_measuringVoice;
+
     // For storing audio levels/thresholds
-    qreal               m_micPeak;
-    qreal               m_micNoise;
+    qreal               m_micNoiseLow;
+    qreal               m_micNoiseHigh;
+    qreal               m_micSpeechLow;
+    qreal               m_micSpeechHigh;
+
+    // These are separate from the above (measured) values, as we may
+    // need to apply some hysteresis and/or fuzzing for the final
+    // results that we want to return.
+    qreal               m_noiseThreshold;
+    qreal               m_speechThreshold;
 };
 
 /**
@@ -153,6 +165,12 @@ public:
      * Fetch calculated audio levels
      */
     void getLevels(qreal &minLevel, qreal &maxLevel);
+
+    /*
+     * Set audio processing mode; used for separating background noise
+     * levels from speech levels
+     */
+    void setAudioMode(bool speaking);
 
 
 signals:

@@ -117,14 +117,14 @@ void AudioLevelWidget::spectrumChanged(qint64 position, qint64 length,
 // Sets clip level values to provided arguments, returns 0 on success.
 // If either of the levels is missing, does nothing to the arguments and
 // returns -1.
-int AudioLevelWidget::getLevels(qreal &aboveSilence, qreal &peakLevel)
+int AudioLevelWidget::getLevels(qreal &aboveSilence, qreal &aboveSpeech)
 {
     // Fetch values first
 
     m_engine->getAudioLevels(m_silenceClipLevel, m_speechClipLevel);
 
     aboveSilence = m_silenceClipLevel;
-    peakLevel = m_speechClipLevel;
+    aboveSpeech = m_speechClipLevel;
     return 0;
 }
 
@@ -142,12 +142,12 @@ void AudioLevelWidget::timerEvent(QTimerEvent *event)
     qDebug("Timer event fired.");
 }
 
-void AudioLevelWidget::startRecording()
+void AudioLevelWidget::startRecording(bool speaking)
 {
     // Blindly select default input device
     m_engine->setAudioInputDevice(QAudioDeviceInfo::defaultInputDevice());
 
-    m_engine->startRecording();
+    m_engine->startRecording(speaking);
 }
 
 void AudioLevelWidget::stopRecording()
