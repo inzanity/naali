@@ -144,7 +144,7 @@ void Engine::getAudioLevels(qreal &minLevel, qreal &maxLevel)
 // Public slots
 //-----------------------------------------------------------------------------
 
-void Engine::startRecording()
+void Engine::startRecording(bool speaking)
 {
     // Spew all discovered input devices on start
     qDebug() << "Input devices:";
@@ -155,6 +155,8 @@ void Engine::startRecording()
     qDebug() << "Selected device: " << m_audioInputDevice.deviceName();
     qDebug() << "";
 
+    // Pass the mode selection to spectrum analyser
+    m_spectrumAnalyser.setAudioMode(speaking);
 
     if (m_audioInput) {
         if (QAudio::AudioInput == m_mode &&

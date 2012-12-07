@@ -24,10 +24,14 @@ MainView::~MainView()
 void MainView::create_layout()
 {
     layout = new QVBoxLayout();
-    btn = new QPushButton(REC_START);
+    btn1 = new QPushButton(REC_START_SILENCE);
+    btn2 = new QPushButton(REC_START_VOICE);
+    btnX = new QPushButton("Get measured levels");
 
     layout->addWidget(analyzer);
-    layout->addWidget(btn);
+    layout->addWidget(btn1);
+    layout->addWidget(btn2);
+    layout->addWidget(btnX);
     this->setLayout(layout);
 
     // Size for our window
@@ -36,33 +40,57 @@ void MainView::create_layout()
 
 void MainView::connect_signals()
 {
-    connect(btn, SIGNAL(clicked()), this, SLOT(btn_cb(void)));
+    connect(btn1, SIGNAL(clicked()), this, SLOT(btn1_cb(void)));
+    connect(btn2, SIGNAL(clicked()), this, SLOT(btn2_cb(void)));
+    connect(btnX, SIGNAL(clicked()), this, SLOT(btnX_cb(void)));
 }
 
 /* Public signal methods (slots) */
-void MainView::btn_cb()
+
+// Silence level measuring button
+void MainView::btn1_cb()
 {
     // Flip state
     recording = !recording;
 
     if (!recording)
-        btn->setText(REC_START);
+        btn1->setText(REC_START_SILENCE);
     else
-        btn->setText(REC_STOP);
+        btn1->setText(REC_STOP);
 
 
     if (recording)
-        analyzer->startRecording();
+        analyzer->startRecording(false);
+    else
+        analyzer->stopRecording();
+}
+
+// Voice level measuring button
+void MainView::btn2_cb()
+{
+    // Flip state
+    recording = !recording;
+
+    if (!recording)
+        btn2->setText(REC_START_VOICE);
+    else
+        btn2->setText(REC_STOP);
+
+
+    if (recording)
+        analyzer->startRecording(true);
     else
         analyzer->stopRecording();
 
-    // Dump measured levels afterwards
-    if (!recording) {
-        qreal _min, _max;
-        analyzer->getLevels(_min, _max);
-
-        qDebug("Minimum audio level: %.2f; Maximum audio level: %.2f",
-            _min, _max);
-    }
 }
+
+void MainView::btnX_cb()
+{
+    qreal _clipS, _clipV;
+    analyzer->getLevels(_clipS, _clipV);
+
+    qDebug("Silence clip level: %.2f; Voice clip level: %.2f",
+        _clipS, _clipV);
+}
+
 

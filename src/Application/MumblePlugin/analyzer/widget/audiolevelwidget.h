@@ -73,10 +73,10 @@ public:
     void timerEvent(QTimerEvent *event);
 
     // Results
-    int getLevels(qreal &aboveSilence, qreal &peakLevel);
+    int getLevels(qreal &aboveSilence, qreal &aboveSpeech);
 
     // Just passing through...
-    void startRecording(void);
+    void startRecording(bool speaking);
     void stopRecording(void);
 
 public slots:
@@ -97,7 +97,9 @@ private:
     Spectrograph*   m_spectrograph;
     //LevelMeter*     m_levelMeter;
 
-    // Audio clip levels
+    // Audio clip levels:
+    // Anything below 'silenceClip' is background noise.
+    // Values above 'speechClip' are regular speech.
     qreal           m_silenceClipLevel;
     qreal           m_speechClipLevel;
 
