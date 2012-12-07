@@ -171,8 +171,8 @@ void SpectrumAnalyserThread::calculateSpectrum(const QByteArray &buffer,
             if (PeakMic > m_micSpeechHigh)
                 m_micSpeechHigh = PeakMic;
 
-            // Lowest level
-            if (PeakMic < m_micSpeechLow)
+            // Lowest level, which MUST be above background noise level
+            if (PeakMic < m_micSpeechLow && PeakMic > m_micNoiseHigh)
                 m_micSpeechLow = PeakMic;
         }
     // Background noise ("silence") measurements
