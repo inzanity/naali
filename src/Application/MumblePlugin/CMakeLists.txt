@@ -123,6 +123,9 @@ file (GLOB H_FILES *.h analyzer/widget/*.h)
 file (GLOB UI_FILES *.ui)
 file (GLOB QRC_FILES resource/*.qrc)
 
+# Autolevel widget includes
+include_directories(analyzer/fftreal analyzer/widget)
+
 # Do manual source grouping as we need to detect a .cc file
 file(GLOB H_FILES_MUMBLE mumble/*.h)
 file(GLOB CPP_FILES_MUMBLE_${folder_name} mumble/*.cpp mumble/*.cc)
