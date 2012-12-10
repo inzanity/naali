@@ -5,6 +5,7 @@
 #include "AudioAPI.h"
 #include "mumble/AudioStats.h"
 #include "LoggingFunctions.h"
+#include "LevelAutoDetectDialog.h"
 
 namespace MumbleAudio
 {
@@ -337,7 +338,7 @@ namespace MumbleAudio
     {
         modalWindow = new MumbleAudio::LevelAutoDetectDialog;
         modalWindow->setWindowModality(Qt::WindowModal);
-        modalWindow.show();
+        modalWindow->show();
     }
 
     void AudioWizard::OnSliderReleased()
