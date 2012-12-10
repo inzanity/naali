@@ -15,8 +15,8 @@ namespace MumbleAudio
         Q_OBJECT
 
     public:
-        LevelAutoDetect();
-        ~LevelAutoDetect();
+        LevelAutoDetectDialog();
+        ~LevelAutoDetectDialog();
 
     public slots:
         void silence_levels();
