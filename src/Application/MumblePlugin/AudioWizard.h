@@ -55,6 +55,8 @@ namespace MumbleAudio
         void OnApplyPressed();
         void OnSliderReleased();
 
+        void OnDetectLevelsPressed();
+
     private:
         AudioSettings currentSettings;
         AudioSettings originalSettings;
