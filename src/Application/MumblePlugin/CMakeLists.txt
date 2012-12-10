@@ -14,7 +14,7 @@ macro (configure_speex)
         PREFIXES ${SPEEX_ROOT}      # full prebuilt deps
                  ${ENV_TUNDRA_DEP_PATH}
                  ${SPEEX_ROOT}/lib/Release) # packaged prebuilt deps
-        
+
     sagase_configure_report (SPEEX)
 endmacro (configure_speex)
 
@@ -30,14 +30,14 @@ macro (configure_protobuf)
 
         # Remove FindProtobuf.cmake generated not found item
         list (REMOVE_ITEM PROTOBUF_LIBRARIES PROTOBUF_LIBRARY-NOTFOUND)
-        
+
         if ("${PROTOBUF_PROTOC_EXECUTABLE}" STREQUAL "PROTOBUF_PROTOC_EXECUTABLE-NOTFOUND")
             set (PROTOBUF_PROTOC_EXECUTABLE ${ENV_TUNDRA_DEP_PATH}/bin/protoc)
             message (STATUS "Protoc executable not found automatically, guessing location to " ${PROTOBUF_PROTOC_EXECUTABLE})
         else ()
             message (STATUS "Protoc executable found from: " ${PROTOBUF_PROTOC_EXECUTABLE})
         endif ()
-        
+
         # Force the protobuf as found or Mumble.proto wont be processed.
         set (PROTOBUF_FOUND 1)
     endif()
@@ -65,18 +65,18 @@ macro (configure_protobuf)
             endif()
         endif()
     endif()
-    
+
     sagase_configure_report (PROTOBUF)
 endmacro (configure_protobuf)
 
-macro (configure_openssl)       
+macro (configure_openssl)
     if ("${OPENSSL_ROOT_DIR}" STREQUAL "")
         file (TO_CMAKE_PATH "$ENV{OPENSSL_ROOT_DIR}" OPENSSL_ROOT_DIR)
     endif()
     if ("${OPENSSL_ROOT_DIR}" STREQUAL "")
         SET(OPENSSL_ROOT_DIR ${ENV_TUNDRA_DEP_PATH}/openssl)
     endif()
-    
+
     find_package(OpenSSL REQUIRED)
     set(OPENSSL_INCLUDE_DIRS ${OPENSSL_INCLUDE_DIR}) # Duplicate found includes to the proper variable so sagase is pleased.
     sagase_configure_report (OPENSSL)
@@ -97,7 +97,7 @@ macro (configure_celt)
                    celt     # for celt.h
         PREFIXES ${CELT_ROOT}
                  ${ENV_TUNDRA_DEP_PATH})
-        
+
     sagase_configure_report (CELT)
 endmacro (configure_celt)
 
@@ -111,9 +111,15 @@ configure_openssl ()
 # Define target name and output directory
 init_target (MumblePlugin OUTPUT plugins)
 
+# Build FFTReal library separately, before the rest
+file (GLOB FFTREAL_SOURCES analyzer/fftreal/*.hpp)
+file (GLOB FFTREAL_HEADERS analyzer/fftreal/*.h)
+add_library(fftreal ${FFTREAL_SOURCES} ${FFTREAL_HEADERS})
+set_target_properties(fftreal PROPERTIES LINKER_LANGUAGE CXX)
+
 # Define source files
-file (GLOB CPP_FILES *.cpp *.cc)
-file (GLOB H_FILES *.h)
+file (GLOB CPP_FILES *.cpp *.cc analyzer/widget/*.cpp)
+file (GLOB H_FILES *.h analyzer/widget/*.h)
 file (GLOB UI_FILES *.ui)
 file (GLOB QRC_FILES resource/*.qrc)
 
@@ -139,7 +145,7 @@ use_package (CELT)
 use_package (PROTOBUF)
 use_package (OPENSSL)
 
-# Gnerate build rule to generate header and source file(s) from a .proto file. 
+# Gnerate build rule to generate header and source file(s) from a .proto file.
 # The files are generated on all builds if they don't exists already.
 # So typically the in the start of the first build.
 if (PROTOBUF_FOUND)
@@ -167,7 +173,7 @@ if (NOT WIN32)
 
     #TODO This line should not be needed, as these libraries should be picked up by above link_package. However,
     # does not seem to be happening. Remove this line when the above link_packages have been fixed.
-    target_link_libraries(${TARGET_NAME} speex speexdsp protobuf)
+    target_link_libraries(${TARGET_NAME} speex speexdsp protobuf fftreal)
 endif ()
 
 if (WIN32)
