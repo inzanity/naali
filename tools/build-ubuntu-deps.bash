@@ -58,6 +58,9 @@ if lsb_release -c | egrep -q "lucid|maverick|natty|oneiric|precise|maya|lisa|kat
      libspeexdsp-dev libprotobuf-dev \
      libvlc-dev
 fi
+if lsb_release -c | egrep -q "lucid|maverick|natty|oneiric|precise|quantal" && tty >/dev/null; then
+    sudo apt-get build-dep libogre-dev
+fi
 
 what=bullet-2.79-rev2440
 whatdir=bullet-2.79
@@ -95,7 +98,7 @@ else
 fi
 
 what=qtscriptgenerator
-if test -f $tags/$what-done; then 
+if test -f $tags/$what-done; then
    echo $what is done
 else
     cd $build
@@ -114,17 +117,17 @@ Last-Update: 2011-03-20
 @@ -53,13 +53,9 @@
  #  include <QtXmlPatterns/QtXmlPatterns>
  #endif
- 
+
 -#ifndef QT_NO_WEBKIT
  #  include <QtWebKit/QtWebKit>
 -#endif
- 
+
 -#ifndef QT_NO_PHONON
  #  include <phonon/phonon>
 -#endif
- 
+
  #include "../qtbindings/qtscript_core/qtscriptconcurrent.h"
- 
+
 EOF
     cd generator
     qmake
@@ -162,7 +165,7 @@ else
 fi
 
 what=kNet
-if test -f $tags/$what-done; then 
+if test -f $tags/$what-done; then
    echo $what is done
 else
     cd $build
@@ -180,7 +183,7 @@ else
 fi
 
 what=ogre-safe-nocrashes
-if test -f $tags/$what-done; then 
+if test -f $tags/$what-done; then
    echo "Testing whether there are new changes in $what"
    cd $build/$what
    res=`hg pull -u|grep "no changes found"`
@@ -199,15 +202,12 @@ else
     fi
 
 
-    if lsb_release -c | egrep -q "lucid|maverick|natty|oneiric|precise|quantal" && tty >/dev/null; then
-    sudo apt-get build-dep libogre-dev
-    fi
     cd $what
     hg checkout v1-8 # Make sure we are in the right branch
     # Fix linking with recent boost libs
     sed -i -s 's/OGRE_BOOST_COMPONENTS thread/OGRE_BOOST_COMPONENTS system thread/' CMake/Dependencies.cmake
     mkdir -p $what-build
-    cd $what-build  
+    cd $what-build
     cmake .. -DCMAKE_INSTALL_PREFIX=$prefix -DOGRE_BUILD_PLUGIN_BSP:BOOL=OFF -DOGRE_BUILD_PLUGIN_PCZ:BOOL=OFF -DOGRE_BUILD_SAMPLES:BOOL=OFF
     make -j $nprocs VERBOSE=1
     make install
