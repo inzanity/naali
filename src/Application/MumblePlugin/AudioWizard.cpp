@@ -5,10 +5,11 @@
 #include "AudioAPI.h"
 #include "mumble/AudioStats.h"
 #include "LoggingFunctions.h"
+#include "LevelAutoDetectDialog.h"
 
 namespace MumbleAudio
 {
-    AudioWizard::AudioWizard(Framework *framework, AudioSettings settings) : 
+    AudioWizard::AudioWizard(Framework *framework, AudioSettings settings) :
         peakTicks(0),
         peakMax(0)
     {
@@ -20,7 +21,7 @@ namespace MumbleAudio
 
         setupUi(this);
         setAttribute(Qt::WA_DeleteOnClose, true);
-        
+
         // Audio bar init
         audioBar = new Mumble::AudioBar(this);
         audioBar->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -120,13 +121,14 @@ namespace MumbleAudio
         connect(sliderSpeech, SIGNAL(valueChanged(int)), SLOT(OnMaxVADChanged(int)));
 
         connect(sliderSuppression, SIGNAL(sliderReleased()), SLOT(OnSliderReleased()));
-        connect(sliderAmplification, SIGNAL(sliderReleased()), SLOT(OnSliderReleased()));        
+        connect(sliderAmplification, SIGNAL(sliderReleased()), SLOT(OnSliderReleased()));
         connect(sliderSilence, SIGNAL(sliderReleased()), SLOT(OnSliderReleased()));
         connect(sliderSpeech, SIGNAL(sliderReleased()), SLOT(OnSliderReleased()));
 
         connect(buttonOK, SIGNAL(clicked()), SLOT(OnOKPressed()));
         connect(buttonCancel, SIGNAL(clicked()), SLOT(OnCancelPressed()));
         connect(buttonApply, SIGNAL(clicked()), SLOT(OnApplyPressed()));
+        connect(detectLevelsButton, SIGNAL(clicked()), SLOT(OnDetectLevelsPressed()));
 
         connect(comboBoxInputDevice, SIGNAL(currentIndexChanged(const QString&)), SLOT(OnInputDeviceChanged(const QString&)));
         connect(comboBoxTransmitMode, SIGNAL(currentIndexChanged(const QString&)), SLOT(OnTransmitModeChanged(const QString&)));
@@ -148,7 +150,7 @@ namespace MumbleAudio
         show();
 
         resize(1,1);
-    }   
+    }
 
     AudioWizard::~AudioWizard()
     {
@@ -194,11 +196,11 @@ namespace MumbleAudio
     void AudioWizard::OnInputDeviceChanged(const QString &deviceName)
     {
         currentSettings.recordingDevice = deviceName;
-        
+
         // Automatically apply this option when changed.
         OnApplyPressed();
     }
-    
+
     void AudioWizard::OnTransmitModeChanged(const QString &mode)
     {
         if (mode == "Voice Activity")
@@ -212,7 +214,7 @@ namespace MumbleAudio
         sliderSpeech->setEnabled(vadEnabled);
         labelValueSpeech->setEnabled(vadEnabled);
         audioBar->setEnabled(vadEnabled);
-        
+
         peakTicks = 0;
         peakMax = 0;
         audioBar->iPeak = -1;
@@ -269,7 +271,7 @@ namespace MumbleAudio
 
         buttonApply->setEnabled(true);
     }
-       
+
     void AudioWizard::OnInnerRangeChanged(int value)
     {
         currentSettings.innerRange = value;
@@ -308,7 +310,7 @@ namespace MumbleAudio
         bool visible = !groupBoxQuality->isVisible();
         groupBoxQuality->setVisible(visible);
         groupBoxProcessing->setVisible(visible);
-        
+
         QString text = buttonAdvanced->text();
         buttonAdvanced->setText(!visible ? text.replace("Hide", "Show") : text.replace("Show", "Hide"));
         resize(visible ? QSize(999,999) : QSize(1,1));
@@ -331,10 +333,17 @@ namespace MumbleAudio
         emit SettingsChanged(currentSettings, true);
         buttonApply->setDisabled(true);
     }
-    
+
+    void AudioWizard::OnDetectLevelsPressed()
+    {
+        modalWindow = new MumbleAudio::LevelAutoDetectDialog;
+        modalWindow->setWindowModality(Qt::WindowModal);
+        modalWindow->show();
+    }
+
     void AudioWizard::OnSliderReleased()
     {
-        // Automatically apply when a slider is released. We don't want to spam 
+        // Automatically apply when a slider is released. We don't want to spam
         // settings changed signal when the slider is still being moved.
         OnApplyPressed();
     }
