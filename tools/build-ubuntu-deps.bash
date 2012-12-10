@@ -56,7 +56,7 @@ if lsb_release -c | egrep -q "lucid|maverick|natty|oneiric|precise|maya|lisa|kat
 	 protobuf-c-compiler protobuf-compiler \
      libqt4-opengl-dev libqtwebkit-dev \
      libspeexdsp-dev libprotobuf-dev \
-     libvlc-dev
+     libvlc-dev qtmobility-dev
 fi
 if lsb_release -c | egrep -q "lucid|maverick|natty|oneiric|precise|quantal" && tty >/dev/null; then
     sudo apt-get build-dep libogre-dev

@@ -72,7 +72,7 @@ macro(AddEntityComponent componentName)
     endif ()
 endmacro()
 
-# AddProject takes in one or two parameters: 
+# AddProject takes in one or two parameters:
 # - One param  : argv0 == the relative directory (to the root CMakeLists.txt) where you project is and that contains the CMakeLists.txt for this project.
 # - Two params : argv0 == 'Core'|'Application'. argv1 folder name of the project in the src/argv0/
 # More useful for building the Tundra project when including platform provided projects.
@@ -142,7 +142,7 @@ macro(SetupCompileFlagsWithPCH)
         # Add a #define DEBUG_CPP_NAME "this compilation unit name" to each compilation unit to aid in memory leak checking.
         foreach(src_file ${CPP_FILES})
             if (${src_file} MATCHES "StableHeaders.cpp$")
-                set_source_files_properties(${src_file} PROPERTIES COMPILE_FLAGS "/YcStableHeaders.h")        
+                set_source_files_properties(${src_file} PROPERTIES COMPILE_FLAGS "/YcStableHeaders.h")
             else()
                 get_filename_component(basename ${src_file} NAME)
                 set_source_files_properties(${src_file} PROPERTIES COMPILE_FLAGS "/YuStableHeaders.h -DDEBUG_CPP_NAME=\"\\\"${basename}\"\\\"")
@@ -196,7 +196,7 @@ endif ()
 # On MSVC, use warning level 4 but disable the following warnings:
 # C4100 'identifier' : unreferenced formal parameter
 # C4127 conditional expression is constant
-# C4512 'class' : assignment operator could not be generated 
+# C4512 'class' : assignment operator could not be generated
 # C4505 'function' : unreferenced local function has been removed
 # C4251 'identifier' : class 'type' needs to have dll-interface to be used by clients of class 'type2'
 if (MSVC)
@@ -214,6 +214,7 @@ include (ConfigurePackages)
 include (TundraInstall)
 include (FindOgre)
 include (FindDirectX)
+include (FindQtMobility)
 
 # Disable unnecessary build types
 set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo;Debug" CACHE STRING "Configurations" FORCE)
@@ -242,7 +243,7 @@ setup_clean_install_step()
 
 # Set normalized path for common environment variables
 # If you want to use custom built dependencies along side with TUNDRA_DEP_PATH
-# you can define the following env variables: 
+# you can define the following env variables:
 # OGRE_HOME, SKYX_HOME, HYDRAX_HOME, KNET_DIR_QT47, BULLET_DIR, ASSIMP_DIR
 file (TO_CMAKE_PATH "$ENV{TUNDRA_DEP_PATH}" ENV_TUNDRA_DEP_PATH)
 file (TO_CMAKE_PATH "$ENV{QTDIR}" ENV_QT_DIR)
@@ -287,7 +288,7 @@ message ("\n\n=========== Configuring Dependencies ===========\n")
 configure_boost()
 configure_qt4()
 if (NOT APPLE) # Python and PythonQt are not available currently on Mac.
-    if ("$ENV{TUNDRA_PYTHON_ENABLED}" STREQUAL "TRUE") 
+    if ("$ENV{TUNDRA_PYTHON_ENABLED}" STREQUAL "TRUE")
         configure_python()
         configure_python_qt()
     endif()
@@ -299,7 +300,7 @@ use_package_ogg()
 use_package_vorbis()
 
 # This will find kNet and set the global include and library directories
-use_package_knet() 
+use_package_knet()
 
 message ("\n** Adding global include and link directories")
 use_package(OGRE)
@@ -331,7 +332,7 @@ add_definitions(-DMATH_ENABLE_STL_SUPPORT)
 add_definitions(-DMATH_TUNDRA_INTEROP)
 
 # Read the set of optional modules from another file
-# that is kept outside the source control. 
+# that is kept outside the source control.
 # To configure the set of optional modules to add to the build,
 # edit CMakeBuildConfig.txt and rerun cmake.
 include(CMakeBuildConfig.txt)
