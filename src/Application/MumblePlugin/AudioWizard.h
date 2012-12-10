@@ -18,7 +18,7 @@ namespace Mumble
 namespace MumbleAudio
 {
     class AudioWizard : public QWidget, private Ui::AudioWizardWidget
-    {    
+    {
     Q_OBJECT
 
     public:
@@ -38,10 +38,10 @@ namespace MumbleAudio
 
         void OnSuppressChanged(int value);
         void OnAmplificationChanged(int value);
-        
+
         void OnMinVADChanged(int value);
         void OnMaxVADChanged(int value);
-        
+
         void OnInnerRangeChanged(int value);
         void OnOuterRangeChanged(int value);
 
@@ -60,6 +60,9 @@ namespace MumbleAudio
         AudioSettings originalSettings;
 
         Mumble::AudioBar *audioBar;
+
+        // Audio level helper: button opens this modal window
+        QDialog *modalWindow;
 
         int peakTicks;
         int peakMax;
