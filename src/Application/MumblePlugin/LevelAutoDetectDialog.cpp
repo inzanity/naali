@@ -20,7 +20,7 @@ namespace MumbleAudio
         delete analyzer;
     }
 
-    LevelAutoDetectDialog::create_layout()
+    void LevelAutoDetectDialog::create_layout()
     {
         layout = new QVBoxLayout();
         silence_btn = new QPushButton(RECORD_SILENCE);
@@ -101,7 +101,8 @@ namespace MumbleAudio
         silenceClipLevel = abs(low)/96.0f;
         voiceClipLevel = abs(high)/96.0f;
 
-        emit ...;
+        // FIXME: emit levels via signal, catch in wizard
+        //emit ...;
 
         // Terminate modal dialog
         this.done();
