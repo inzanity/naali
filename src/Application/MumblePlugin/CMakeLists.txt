@@ -114,7 +114,7 @@ init_target (MumblePlugin OUTPUT plugins)
 # Build FFTReal library separately, before the rest
 file (GLOB FFTREAL_SOURCES analyzer/fftreal/*.hpp)
 file (GLOB FFTREAL_HEADERS analyzer/fftreal/*.h)
-add_library(fftreal ${FFTREAL_SOURCES} ${FFTREAL_HEADERS})
+add_library(fftreal SHARED ${FFTREAL_SOURCES} ${FFTREAL_HEADERS})
 set_target_properties(fftreal PROPERTIES LINKER_LANGUAGE CXX)
 
 # Define source files
