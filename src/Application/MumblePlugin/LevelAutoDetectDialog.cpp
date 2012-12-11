@@ -105,7 +105,7 @@ namespace MumbleAudio
         //emit ...;
 
         // Terminate modal dialog
-        this.done();
+        this->done(1);
     }
 }
 
