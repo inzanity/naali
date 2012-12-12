@@ -57,6 +57,8 @@ namespace MumbleAudio
 
         void OnDetectLevelsPressed();
 
+        void OnAutoLevelsReceived(qreal silenceClipLevel, qreal speechClipLevel);
+
     private:
         AudioSettings currentSettings;
         AudioSettings originalSettings;

@@ -338,6 +338,14 @@ namespace MumbleAudio
     {
         modalWindow = new MumbleAudio::LevelAutoDetectDialog;
         modalWindow->setWindowModality(Qt::WindowModal);
+
+        // Level automeasurement
+        // XXX: connected here because connect(<orphan pointer>, ...)
+        // causes immediate runtime crash
+        connect(modalWindow,
+                SIGNAL(ClipLevelsMeasured(qreal, qreal)),
+                SLOT(OnAutoLevelsReceived(qreal, qreal)));
+
         modalWindow->show();
     }
 
@@ -347,4 +355,13 @@ namespace MumbleAudio
         // settings changed signal when the slider is still being moved.
         OnApplyPressed();
     }
+
+    void AudioWizard::OnAutoLevelsReceived(qreal silenceClipLevel, qreal speechClipLevel)
+    {
+        // Set the sliders to received values
+        //
+        //
+        qDebug("Silence below %.2f, speech above %.2f", silenceClipLevel, speechClipLevel);
+    }
+
 }
