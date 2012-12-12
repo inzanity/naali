@@ -44,7 +44,7 @@ namespace MumbleAudio
     {
         connect(silence_btn, SIGNAL(clicked()), this, SLOT(silence_levels(void)));
         connect(speech_btn, SIGNAL(clicked()), this, SLOT(speech_levels(void)));
-        connect(done_btn, SIGNAL(clicked()), this, SLOT(done(void)));
+        connect(done_btn, SIGNAL(clicked()), this, SLOT(levels_done(void)));
     }
 
     /* Event handlers (slots) */
