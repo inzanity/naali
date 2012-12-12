@@ -18,6 +18,9 @@ namespace MumbleAudio
         LevelAutoDetectDialog();
         ~LevelAutoDetectDialog();
 
+    signals:
+        void ClipLevelsMeasured(qreal silenceClip, qreal voiceClip);
+
     public slots:
         void silence_levels();
         void speech_levels();

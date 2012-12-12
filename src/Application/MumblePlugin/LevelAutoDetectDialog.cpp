@@ -102,7 +102,7 @@ namespace MumbleAudio
         voiceClipLevel = abs(high)/96.0f;
 
         // FIXME: emit levels via signal, catch in wizard
-        //emit ...;
+        emit ClipLevelsMeasured(silenceClipLevel, voiceClipLevel);
 
         // Terminate modal dialog
         this->done(1);
