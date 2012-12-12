@@ -336,6 +336,23 @@ namespace MumbleAudio
 
     void AudioWizard::OnDetectLevelsPressed()
     {
+        // NOTE: The input audio is apparently filtered by current
+        // slider settings. Before launching the detection wizard, reset
+        // sliders to suitably low values so we can grab everything
+
+        currentSettings.VADmin = 0.0f;
+        currentSettings.VADmax = 0.05f;
+
+        int silenceValue = static_cast<int>(currentSettings.VADmin * 32767.0f + 0.5f);
+        sliderSilence->setValue(silenceValue);
+        OnMinVADChanged(silenceValue);
+
+        int speechValue = static_cast<int>(currentSettings.VADmax * 32767.0f + 0.5f);
+        sliderSpeech->setValue(speechValue);
+        OnMaxVADChanged(speechValue);
+
+
+        // Continue with the regular helper setup
         modalWindow = new MumbleAudio::LevelAutoDetectDialog;
 
         // Level automeasurement
@@ -366,8 +383,6 @@ namespace MumbleAudio
     {
         qDebug("Silence below %.2f, speech above %.2f", silenceClipLevel, speechClipLevel);
 
-        // Set the sliders to received values
-        //
         // Silence clip value
         currentSettings.VADmin = silenceClipLevel;
         audioBar->iBelow = static_cast<int>(currentSettings.VADmin * 32767.0f + 0.5f);
@@ -379,6 +394,19 @@ namespace MumbleAudio
         labelValueSpeech->setText(QString::fromLatin1("%1").arg(currentSettings.VADmax, 0, 'f', 2));
 
         audioBar->update();
+
+        // Set the sliders to received values
+        //
+        //
+        // Voice activity detection
+        int silenceValue = static_cast<int>(currentSettings.VADmin * 32767.0f + 0.5f);
+        sliderSilence->setValue(silenceValue);
+        OnMinVADChanged(silenceValue);
+
+        int speechValue = static_cast<int>(currentSettings.VADmax * 32767.0f + 0.5f);
+        sliderSpeech->setValue(speechValue);
+        OnMaxVADChanged(speechValue);
+
     }
 
 }
