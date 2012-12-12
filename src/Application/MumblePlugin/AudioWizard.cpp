@@ -364,10 +364,21 @@ namespace MumbleAudio
 
     void AudioWizard::OnAutoLevelsReceived(qreal silenceClipLevel, qreal speechClipLevel)
     {
+        qDebug("Silence below %.2f, speech above %.2f", silenceClipLevel, speechClipLevel);
+
         // Set the sliders to received values
         //
-        //
-        qDebug("Silence below %.2f, speech above %.2f", silenceClipLevel, speechClipLevel);
+        // Silence clip value
+        currentSettings.VADmin = silenceClipLevel;
+        audioBar->iBelow = static_cast<int>(currentSettings.VADmin * 32767.0f + 0.5f);
+        labelValueSilence->setText(QString::fromLatin1("%1").arg(currentSettings.VADmin, 0, 'f', 2));
+
+        // Voice clip value
+        currentSettings.VADmax = speechClipLevel;
+        audioBar->iAbove = static_cast<int>(currentSettings.VADmax * 32767.0f + 0.5f);
+        labelValueSpeech->setText(QString::fromLatin1("%1").arg(currentSettings.VADmax, 0, 'f', 2));
+
+        audioBar->update();
     }
 
 }
