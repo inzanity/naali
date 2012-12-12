@@ -97,9 +97,11 @@ namespace MumbleAudio
         analyzer->getLevels(low, high);
 
         // Scale the levels to [0.0, 1.0] range
-        // NOTE: we know the incoming range is [-96.0, 0.0]
-        silenceClipLevel = abs(low)/96.0f;
-        voiceClipLevel = abs(high)/96.0f;
+        // NOTE: we know the incoming range is [-96.0, 0.0],
+        // but we do a "MAX 1.0" in any case. We've seen values up to
+        // 1.03 in some cases.
+        silenceClipLevel = qMin(abs(low)/96.0f, 1.0f);
+        voiceClipLevel = qMin(abs(high)/96.0f, 1.0f);
 
         // FIXME: emit levels via signal, catch in wizard
         emit ClipLevelsMeasured(silenceClipLevel, voiceClipLevel);
