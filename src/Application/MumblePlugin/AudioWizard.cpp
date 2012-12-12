@@ -141,6 +141,11 @@ namespace MumbleAudio
         connect(checkBoxPositionalSend, SIGNAL(clicked()), SLOT(OnAllowSendingPositionalChanged()));
         connect(checkBoxPositionalReceive, SIGNAL(clicked()), SLOT(OnAllowReceivingPositionalChanged()));
 
+        // Level automeasurement
+        connect(modalWindow,
+                SIGNAL(LevelAutoDetectDialog::ClipLevelsMeasured(qreal, qreal)),
+                SLOT(OnAutoLevelsReceived(qreal, qreal)));
+
         buttonApply->setDisabled(true);
         groupBoxQuality->setVisible(false);
         groupBoxProcessing->setVisible(false);
@@ -347,4 +352,13 @@ namespace MumbleAudio
         // settings changed signal when the slider is still being moved.
         OnApplyPressed();
     }
+
+    void AudioWizard::OnAutoLevelsReceived(qreal silenceClipLevel, qreal speechClipLevel)
+    {
+        // Set the sliders to received values
+        //
+        //
+        qDebug("Silence below %.2f, speech above %.2f", silenceClipLevel, speechClipLevel);
+    }
+
 }
