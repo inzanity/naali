@@ -337,7 +337,6 @@ namespace MumbleAudio
     void AudioWizard::OnDetectLevelsPressed()
     {
         modalWindow = new MumbleAudio::LevelAutoDetectDialog;
-        modalWindow->setWindowModality(Qt::WindowModal);
 
         // Level automeasurement
         // XXX: connected here because connect(<orphan pointer>, ...)
@@ -346,6 +345,13 @@ namespace MumbleAudio
                 SIGNAL(ClipLevelsMeasured(qreal, qreal)),
                 SLOT(OnAutoLevelsReceived(qreal, qreal)));
 
+        // XXX: If modality is set *before* connecting the signal, the
+        // voice level measurements do not work.
+        // No, it does not make any sense here either, but moving this
+        // single line *after* connect() made the thing work properly
+        // again.
+        // *le sigh*
+        modalWindow->setWindowModality(Qt::WindowModal);
         modalWindow->show();
     }
 
