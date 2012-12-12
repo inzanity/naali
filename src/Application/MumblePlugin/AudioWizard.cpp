@@ -141,11 +141,6 @@ namespace MumbleAudio
         connect(checkBoxPositionalSend, SIGNAL(clicked()), SLOT(OnAllowSendingPositionalChanged()));
         connect(checkBoxPositionalReceive, SIGNAL(clicked()), SLOT(OnAllowReceivingPositionalChanged()));
 
-        // Level automeasurement
-        connect(modalWindow,
-                SIGNAL(LevelAutoDetectDialog::ClipLevelsMeasured(qreal, qreal)),
-                SLOT(OnAutoLevelsReceived(qreal, qreal)));
-
         buttonApply->setDisabled(true);
         groupBoxQuality->setVisible(false);
         groupBoxProcessing->setVisible(false);
@@ -343,6 +338,14 @@ namespace MumbleAudio
     {
         modalWindow = new MumbleAudio::LevelAutoDetectDialog;
         modalWindow->setWindowModality(Qt::WindowModal);
+
+        // Level automeasurement
+        // XXX: connected here because connect(<orphan pointer>, ...)
+        // causes immediate runtime crash
+        connect(modalWindow,
+                SIGNAL(ClipLevelsMeasured(qreal, qreal)),
+                SLOT(OnAutoLevelsReceived(qreal, qreal)));
+
         modalWindow->show();
     }
 
