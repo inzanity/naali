@@ -100,8 +100,21 @@ namespace MumbleAudio
         // NOTE: we know the incoming range is [-96.0, 0.0],
         // but we do a "MAX 1.0" in any case. We've seen values up to
         // 1.03 in some cases.
-        silenceClipLevel = qMin(abs(low)/96.0f, 1.0f);
-        voiceClipLevel = qMin(abs(high)/96.0f, 1.0f);
+        //
+        // XXX: What the...? These are moronic steps, but when building
+        // on Windows, they are necessary. A direct call of
+        //      qMin(abs(low)/96.0f, 1.0f);
+        // causes a compiler error. Namely this:
+        // "error C2782: 'const T &qMin(const T &, const T&)': template
+        // parameter 'T' is ambiguous"
+        //
+        // XXX: Why is this ever necessary?
+        const qreal low_scaled = abs(low)/96.0f;
+        const qreal high_scaled = abs(high)/96.0f;
+        const qreal _one = 1.0f;
+
+        silenceClipLevel = qMin(low_scaled, _one);
+        voiceClipLevel = qMin(high_scaled, _one);
 
         // FIXME: emit levels via signal, catch in wizard
         emit ClipLevelsMeasured(silenceClipLevel, voiceClipLevel);
