@@ -48,8 +48,8 @@
 #include <QByteArray>
 #include <QBuffer>
 #include <QVector>
-#include <QtMultimediaKit/QAudioDeviceInfo>
-#include <QtMultimediaKit/QAudioFormat>
+#include <QtMultimedia/QAudioDeviceInfo>
+#include <QtMultimedia/QAudioFormat>
 
 #ifdef DUMP_CAPTURED_AUDIO
 #define DUMP_DATA

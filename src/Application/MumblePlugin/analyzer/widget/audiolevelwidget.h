@@ -45,8 +45,8 @@
 #define AUDIOLEVELWIDGET_H
 
 #include <QWidget>
-#include <QtMultimediaKit/QAudio>
-#include <QtMultimediaKit/QAudioFormat>
+#include <QtMultimedia/QAudio>
+#include <QtMultimedia/QAudioFormat>
 
 /* Yay, forward declarations */
 class Engine;
