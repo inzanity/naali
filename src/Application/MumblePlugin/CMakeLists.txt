@@ -126,9 +126,6 @@ file (GLOB QRC_FILES resource/*.qrc)
 # Autolevel widget includes
 include_directories(analyzer/fftreal analyzer/widget)
 
-# FIXME: MONSTROUS KLUDGE TO BUILD AGAINST QT-MOBILITY
-add_definitions(-I/usr/include/QtMobility -I/usr/include/QtMultimediaKit)
-
 # Do manual source grouping as we need to detect a .cc file
 file(GLOB H_FILES_MUMBLE mumble/*.h)
 file(GLOB CPP_FILES_MUMBLE_${folder_name} mumble/*.cpp mumble/*.cc)
@@ -179,7 +176,7 @@ if (NOT WIN32)
 
     #TODO This line should not be needed, as these libraries should be picked up by above link_package. However,
     # does not seem to be happening. Remove this line when the above link_packages have been fixed.
-    target_link_libraries(${TARGET_NAME} speex speexdsp protobuf fftreal QtMultimediaKit)
+    target_link_libraries(${TARGET_NAME} speex speexdsp protobuf fftreal QtMultimedia)
 endif ()
 
 if (WIN32)

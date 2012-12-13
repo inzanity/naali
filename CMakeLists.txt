@@ -214,7 +214,6 @@ include (ConfigurePackages)
 include (TundraInstall)
 include (FindOgre)
 include (FindDirectX)
-include (FindQtMobility)
 
 # Disable unnecessary build types
 set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo;Debug" CACHE STRING "Configurations" FORCE)
@@ -306,7 +305,6 @@ message ("\n** Adding global include and link directories")
 use_package(OGRE)
 use_package(QT4)
 use_package(OPENAL)
-use_package(QtMobility)
 
 set (CORE_MODULE_DIRECTORY ${PROJECT_BINARY_DIR}/src/Core)
 include_directories (${CORE_MODULE_DIRECTORY}/Input)
