@@ -371,7 +371,15 @@ namespace MumbleAudio
             mutexAudioSettings.unlock();
         }
         else
+        {
             framework->Audio()->StopRecording();
+            // Clear obsolete played data
+            if (mutexInput.tryLock(15)) {
+                    for (AudioStateMap::iterator iter = inputAudioStates.begin(); iter != inputAudioStates.end(); ++iter)
+                            iter->second.playedFrames.clear();
+                    mutexInput.unlock();
+            }
+        }
 
         ClearOutputAudio();
     }
