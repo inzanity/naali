@@ -357,6 +357,9 @@ namespace MumbleAudio
             // Reset back to ultra state, gets increased automatically if necessary.
             qualityFramesPerPacket = MUMBLE_AUDIO_FRAMES_PER_PACKET_ULTRA;
 
+            // This is perhaps little heavy, but clears obsolete echo data nicely
+            ResetSpeexProcessor();
+
             // Recording buffer of 40 celt frames, 38400 bytes
             int bufferSize = (MUMBLE_AUDIO_SAMPLES_IN_FRAME * MUMBLE_AUDIO_SAMPLE_WIDTH / 8) * 40;
             if (!framework->Audio()->StartRecording(audioSettings.recordingDevice, MUMBLE_AUDIO_SAMPLE_RATE, true, false, bufferSize))
